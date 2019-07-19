@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:imc_calc/ui/result.dart';
+
 
 void main() {
   runApp(MaterialApp(
@@ -6,50 +8,73 @@ void main() {
     home: Home(),
   ));
 }
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
+
 class _HomeState extends State<Home> {
   TextEditingController pesoController = TextEditingController();
   TextEditingController alturaController = TextEditingController();
+
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _textInfo = "";
+  //String _textInfo = "";
+
   void _resetCampos() {
     _formKey.currentState.reset();
     pesoController.clear();
     alturaController.clear();
-    setState(() {
-      _textInfo = "";
-    });
   }
+
   void _calcular() {
-    setState(() {
-      double peso = double.parse(pesoController.text);
-      double altura = double.parse(alturaController.text) / 100;
-      double imc = peso / (altura * altura);
-      //debugPrint("$imc");
-      if (imc < 18.6)
-        _textInfo = "Abaixo do peso (${imc.toStringAsPrecision(4)})";
-      else if (imc >= 18.6 && imc < 24.9)
-        _textInfo = "Peso ideal (${imc.toStringAsPrecision(4)})";
-      else if (imc >= 24.9 && imc < 29.9)
-        _textInfo = "Levemente acima do peso (${imc.toStringAsPrecision(4)})";
-      else if (imc >= 29.9 && imc < 34.9)
-        _textInfo = "Obesidade Grau I (${imc.toStringAsPrecision(4)})";
-      else if (imc >= 34.9 && imc < 39.9)
-        _textInfo = "Obesidade Grau II (${imc.toStringAsPrecision(4)})";
-      else if (imc >= 40)
-        _textInfo = "Obesidade Grau III (${imc.toStringAsPrecision(4)})";
-    });
+
+    String _mensagem = "";
+    String _imagem = "";
+
+    double peso = double.parse(pesoController.text);
+    double altura = double.parse(alturaController.text) / 100;
+
+    double imc = peso / (altura * altura);
+
+    //debugPrint("$imc");
+    if (imc < 18.6) {
+      _mensagem = "Abaixo do peso (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/thin.png";
+    }
+    else if (imc >= 18.6 && imc < 24.9) {
+      _mensagem = "Peso ideal (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/shape.png";
+    }
+    else if (imc >= 24.9 && imc < 29.9) {
+      _mensagem = "Levemente acima do peso (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/fat.png";
+    }
+    else if (imc >= 29.9 && imc < 34.9) {
+      _mensagem = "Obesidade Grau I (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/fat.png";
+    }
+    else if (imc >= 34.9 && imc < 39.9) {
+      _mensagem = "Obesidade Grau II (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/fat.png";
+    }
+    else if (imc >= 40) {
+      _mensagem = "Obesidade Grau III (${imc.toStringAsPrecision(4)})";
+      _imagem = "images/fat.png";
+    }
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        Result(_imagem, _mensagem)
+    ));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Calculadora de IMC"),
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blueAccent,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
@@ -65,14 +90,14 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Icon(Icons.person, size: 120, color: Colors.red),
+              Icon(Icons.person, size: 120, color: Colors.blueAccent),
               TextFormField(
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     labelText: "Peso (kg)",
-                    labelStyle: TextStyle(color: Colors.red)),
+                    labelStyle: TextStyle(color: Colors.black)),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.red, fontSize: 25.0),
+                style: TextStyle(color: Colors.black, fontSize: 25.0),
                 controller: pesoController,
                 validator: (value) {
                   if (value.isEmpty) return "Insira seu peso!";
@@ -82,9 +107,9 @@ class _HomeState extends State<Home> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     labelText: "Altura (cm)",
-                    labelStyle: TextStyle(color: Colors.red)),
+                    labelStyle: TextStyle(color: Colors.black)),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.red, fontSize: 25.0),
+                style: TextStyle(color: Colors.black, fontSize: 25.0),
                 controller: alturaController,
                 validator: (value) {
                   if (value.isEmpty) return "Insira sua altura!";
@@ -96,20 +121,16 @@ class _HomeState extends State<Home> {
                     height: 50.0,
                     child: RaisedButton(
                       onPressed: () {
-                        if (_formKey.currentState.validate()) _calcular();
+                        if (_formKey.currentState.validate())
+                          _calcular();
                       },
                       child: Text(
                         "Calcular",
                         style: TextStyle(color: Colors.white, fontSize: 25.0),
                       ),
-                      color: Colors.red,
+                      color: Colors.blueAccent,
                     )),
               ),
-              Text(
-                _textInfo,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.red, fontSize: 25.0),
-              )
             ], //<widget>[]
           ),
         ),
