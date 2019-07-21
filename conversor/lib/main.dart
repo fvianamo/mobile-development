@@ -9,7 +9,7 @@ const request = "https://api.hgbrasil.com/finance?format=json-cors&key=d6e88ec4"
 void main() async {
   runApp(MaterialApp(
     home: Home(),
-    theme: ThemeData(hintColor: Colors.amber, primaryColor: Colors.amber),
+    theme: ThemeData(hintColor: Colors.green, primaryColor: Colors.green),
   ));
 
 }
@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
   double dolar;
   double euro;
 
-  void _realChange(String text){
+  void _realChanged(String text){
     if(text.isEmpty){
       _clearAll();
       return;
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
     euroController.text = (real/euro).toStringAsFixed(2);
   }
 
-  void _dolarChange(String text){
+  void _dolarChanged(String text){
     if(text.isEmpty){
       _clearAll();
       return;
@@ -76,9 +76,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("\$ Conversor de Moeda \$"),
-        centerTitle: true,
-        backgroundColor: Colors.amber
+          title: Text("\$ Conversor de Moeda \$"),
+          centerTitle: true,
+          backgroundColor: Colors.green
       ),
       body: FutureBuilder<Map>(
         future: getData(),
@@ -90,15 +90,15 @@ class _HomeState extends State<Home> {
               return Center(
                 child: Text(
                   "Carregando dados...",
-                  style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                  style: TextStyle(color: Colors.red, fontSize: 25.0),
                 ),
               );
             default:
               if (snapshot.hasError) {
                 return Center(
                   child: Text(
-                    "Carregando dados...",
-                    style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                    "Sem conexão...",
+                    style: TextStyle(color: Colors.red, fontSize: 25.0),
                   ),
                 );
               }
@@ -110,14 +110,18 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      //TODO Incluir Icon e BuildTextFormField
+                      Icon(Icons.monetization_on, size: 150.0, color: Colors.green,),
+                      BuildTextFormField("Reais", "R\$", realController, _realChanged),
+                      Divider(),
+                      BuildTextFormField("Dollar", "US\$", dollarController, _dolarChanged),
+                      Divider(),
+                      BuildTextFormField("Euro", "EUR", euroController, _euroChanged),
                     ],
                   ),
                 );
               }
           }
         },
-      ),
       ),
     );
   }
@@ -129,11 +133,11 @@ class _HomeState extends State<Home> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.amber),
+        labelStyle: TextStyle(color: Colors.green),
         border: OutlineInputBorder(),
         prefixText: "$prefix ",
       ),
-      style: TextStyle(color: Colors.amber, fontSize: 25.0),
+      style: TextStyle(color: Colors.green, fontSize: 25.0),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
     );
   }
